@@ -1,5 +1,5 @@
 import Book from "../models/books.js"
-
+import cloudinary from "../config/cloudinary.js";
 const getAllBooks = async (req, res) => {
     try {
         const books = await Book.find();
@@ -19,8 +19,9 @@ const createBook = async (req, res) => {
             categories,
             price,
             quantity,
-            ImageUrl
         } = req.body;
+
+        const imageUrl = req.file.path;
 
         const newBook = new Book({
             title,
@@ -29,9 +30,10 @@ const createBook = async (req, res) => {
             categories,
             price,
             quantity,
-            ImageUrl
+            imageUrl
         });
 
+        console.log("Creating book with data:", newBook);
         const savedBook = await newBook.save();
 
         res.status(201).json(savedBook);
@@ -40,30 +42,21 @@ const createBook = async (req, res) => {
         res.status(400).json({ message: "Failed to create book" });
     }
 };
+
 const updateBook = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const {
-            title,
-            author,
-            categories,
-            price,
-            quantity,
-            ImageUrl
-        } = req.body;
+        const updateData = { ...req.body };
 
-        const updateData = {};
-
-        if (title !== undefined) updateData.title = title;
-        if (author !== undefined) updateData.author = author;
-        if (categories !== undefined) updateData.categories = categories;
-        if (price !== undefined) updateData.price = price;
-        if (quantity !== undefined) {
-            updateData.quantity = quantity;
-            updateData.inStock = quantity > 0; // tự cập nhật
+        // Nếu có upload ảnh mới
+        if (req.file) {
+            updateData.imageUrl = req.file.path;
         }
-        if (ImageUrl !== undefined) updateData.ImageUrl = ImageUrl;
+
+        if (updateData.quantity !== undefined) {
+            updateData.inStock = updateData.quantity > 0;
+        }
 
         const updatedBook = await Book.findByIdAndUpdate(
             id,
@@ -76,27 +69,31 @@ const updateBook = async (req, res) => {
         }
 
         res.status(200).json(updatedBook);
-
     } catch (error) {
         console.error("Error updating book:", error);
         res.status(400).json({ message: "Failed to update book" });
     }
 };
+
 const deleteBook = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const deletedBook = await Book.findByIdAndDelete(id);
+        const book = await Book.findById(id);
 
-        if (!deletedBook) {
-            return res.status(404).json({
-                message: "Book not found"
-            });
+        if (!book) {
+            return res.status(404).json({ message: "Book not found" });
         }
+
+        // Xóa ảnh trên Cloudinary
+        if (book.imagePublicId) {
+            await cloudinary.uploader.destroy(book.imagePublicId);
+        }
+
+        await Book.findByIdAndDelete(id);
 
         res.status(200).json({
             message: "Book deleted successfully",
-            deletedBook
         });
 
     } catch (error) {

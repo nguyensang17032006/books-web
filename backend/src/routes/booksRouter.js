@@ -1,11 +1,12 @@
 import express from 'express'
 import { getAllBooks, createBook, updateBook, deleteBook } from '../controllers/booksController.js';
+import upload from '../config/upload.js';
 const route = express();
 
 route.get('/', (req, res) => {
     getAllBooks(req, res);
 })
-route.post('/', (req, res) => {
+route.post('/', upload.single('image'), (req, res) => {
     createBook(req, res);
 })
 route.put('/:id', (req, res) => {

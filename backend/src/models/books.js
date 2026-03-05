@@ -34,7 +34,7 @@ const bookSchema = new mongoose.Schema(
             default: 0,
             min: 0
         },
-        ImageUrl: {
+        imageUrl: {
             type: String,
             default: ""
         }
