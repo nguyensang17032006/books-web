@@ -1,0 +1,17 @@
+services:
+
+  backend:
+    build: ./backend
+    container_name: books_backend
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./backend/.env
+
+  frontend:
+    build: ./frontend/books-web
+    container_name: books_frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend

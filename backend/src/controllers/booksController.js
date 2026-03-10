@@ -33,7 +33,6 @@ const createBook = async (req, res) => {
             imageUrl
         });
 
-        console.log("Creating book with data:", newBook);
         const savedBook = await newBook.save();
 
         res.status(201).json(savedBook);

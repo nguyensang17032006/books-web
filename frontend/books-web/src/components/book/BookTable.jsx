@@ -22,7 +22,6 @@ export default function BookTable() {
             const res = await fetch("http://localhost:3000/api/books");
             const data = await res.json();
             setBooks(data);
-            console.log("Fetched books:", data);
         } catch (error) {
             console.error("Error fetching books:", error);
         } finally {
