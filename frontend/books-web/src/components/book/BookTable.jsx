@@ -1,25 +1,44 @@
 import { useEffect, useState } from "react";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
+import EditBookForm from "./EditBookForm";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function BookTable() {
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const [open, setOpen] = useState(false);
+    const [selectedBook, setSelectedBook] = useState(null);
+
     useEffect(() => {
         fetchBooks();
     }, []);
 
+    const handleDelete = async (id) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this book?");
+        if (!confirmDelete) return;
+
+        try {
+            const res = await fetch(`${API_URL}/api/books/${id}`, {
+                method: "DELETE",
+            });
+
+            if (!res.ok) throw new Error("Delete failed");
+
+            // reload list
+            fetchBooks();
+
+        } catch (error) {
+            console.error(error);
+            alert("Error deleting book");
+        }
+    };
+
     const fetchBooks = async () => {
         try {
-            const res = await fetch("http://localhost:3000/api/books");
+            const res = await fetch(`${API_URL}/api/books`);
             const data = await res.json();
             setBooks(data);
         } catch (error) {
@@ -94,10 +113,14 @@ export default function BookTable() {
 
                             <TableCell>
                                 <div className="flex gap-2">
-                                    <button className="text-primary hover:underline text-sm">
+                                    <button className="text-primary hover:underline text-sm"
+                                        onClick={() => {
+                                            setSelectedBook(book);
+                                            setOpen(true);
+                                        }}>
                                         Edit
                                     </button>
-                                    <button className="text-destructive hover:underline text-sm">
+                                    <button className="text-destructive hover:underline text-sm" onClick={() => handleDelete(book._id)}>
                                         Delete
                                     </button>
                                 </div>
@@ -106,6 +129,21 @@ export default function BookTable() {
                     ))}
                 </TableBody>
             </Table>
+            <Dialog open={open} onOpenChange={setOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Edit Book</DialogTitle>
+                    </DialogHeader>
+
+                    <EditBookForm
+                        book={selectedBook}
+                        onSuccess={() => {
+                            fetchBooks();
+                            setOpen(false);
+                        }}
+                    />
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+const API_URL = import.meta.env.VITE_API_URL;
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button.jsx";
 import {
     Form,
     FormControl,
@@ -53,6 +54,13 @@ export default function BookForm() {
         const file = e.target.files[0];
         if (!file) return;
 
+        const allowed = ["image/jpeg", "image/png"];
+
+        if (!allowed.includes(file.type)) {
+            alert("Only JPG and PNG images allowed");
+            return;
+        }
+
         setSelectedFile(file);
         setImagePreview(URL.createObjectURL(file));
     };
@@ -72,7 +80,7 @@ export default function BookForm() {
                 formData.append("image", selectedFile);
             }
 
-            const res = await fetch("http://localhost:3000/api/books", {
+            const res = await fetch(`${API_URL}/api/books`, {
                 method: "POST",
                 body: formData,
             });

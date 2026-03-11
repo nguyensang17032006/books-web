@@ -9,7 +9,7 @@ route.get('/', (req, res) => {
 route.post('/', upload.single('image'), (req, res) => {
     createBook(req, res);
 })
-route.put('/:id', (req, res) => {
+route.put('/:id', upload.single('image'), (req, res) => {
     updateBook(req, res);
 })
 route.delete('/:id', (req, res) => {

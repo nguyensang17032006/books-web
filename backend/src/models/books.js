@@ -37,6 +37,10 @@ const bookSchema = new mongoose.Schema(
         imageUrl: {
             type: String,
             default: ""
+        },
+        imagePublicId: {
+            type: String,
+            default: ""
         }
     },
     { timestamps: true }
@@ -44,14 +48,13 @@ const bookSchema = new mongoose.Schema(
 bookSchema.pre("save", function () {
     this.inStock = this.quantity > 0;
 });
-bookSchema.pre("findOneAndUpdate", function (next) {
+bookSchema.pre("findOneAndUpdate", function () {
     const update = this.getUpdate();
 
     if (update.quantity !== undefined) {
         update.inStock = update.quantity > 0;
     }
 
-    next();
 });
 
 export default mongoose.model("Book", bookSchema);

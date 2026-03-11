@@ -21,7 +21,13 @@ const createBook = async (req, res) => {
             quantity,
         } = req.body;
 
-        const imageUrl = req.file.path;
+        let imageUrl = "";
+        let imagePublicId = "";
+
+        if (req.file) {
+            imageUrl = req.file.path;
+            imagePublicId = req.file.filename; // Cloudinary public_id
+        }
 
         const newBook = new Book({
             title,
@@ -30,12 +36,14 @@ const createBook = async (req, res) => {
             categories,
             price,
             quantity,
-            imageUrl
+            imageUrl,
+            imagePublicId
         });
 
         const savedBook = await newBook.save();
 
         res.status(201).json(savedBook);
+
     } catch (error) {
         console.error("Error creating book:", error);
         res.status(400).json({ message: "Failed to create book" });
@@ -46,15 +54,15 @@ const updateBook = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const updateData = { ...req.body };
+        const updateData = {
+            ...req.body,
+            price: Number(req.body.price),
+            quantity: Number(req.body.quantity),
+            publishedDate: new Date(req.body.publishedDate),
+        };
 
-        // Nếu có upload ảnh mới
         if (req.file) {
             updateData.imageUrl = req.file.path;
-        }
-
-        if (updateData.quantity !== undefined) {
-            updateData.inStock = updateData.quantity > 0;
         }
 
         const updatedBook = await Book.findByIdAndUpdate(
@@ -68,9 +76,10 @@ const updateBook = async (req, res) => {
         }
 
         res.status(200).json(updatedBook);
+
     } catch (error) {
-        console.error("Error updating book:", error);
-        res.status(400).json({ message: "Failed to update book" });
+        console.error("UPDATE ERROR:", error);
+        res.status(400).json({ message: error.message });
     }
 };
 
