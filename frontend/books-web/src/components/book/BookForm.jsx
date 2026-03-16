@@ -13,15 +13,15 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@/components/ui/form.jsx";
+import { Input } from "@/components/ui/input.jsx";
 import {
     Card,
     CardContent,
     CardDescription,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/card.jsx";
 
 const schema = z.object({
     title: z.string().min(1, "Title is required"),

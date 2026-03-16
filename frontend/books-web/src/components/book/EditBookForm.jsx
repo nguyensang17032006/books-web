@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 const API_URL = import.meta.env.VITE_API_URL;
 import * as z from "zod";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button.jsx";
 import {
     Form,
     FormControl,
@@ -12,8 +12,8 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@/components/ui/form.jsx";
+import { Input } from "@/components/ui/input.jsx";
 
 const schema = z.object({
     title: z.string().min(1),

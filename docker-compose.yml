@@ -6,6 +6,8 @@ services:
     container_name: books_backend
     ports:
       - "3000:3000"
+    networks:
+      - app-network
     env_file:
       - ./backend/.env
 
@@ -14,6 +16,8 @@ services:
     container_name: books_frontend
     ports:
       - "5173:5173"
+    networks:
+      - app-network
     depends_on:
       - backend
 
@@ -24,6 +28,14 @@ services:
       - "80:80"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - app-network
     depends_on:
       - frontend
       - backend
+
+networks:
+  app-network:
+    driver: bridge
+
+

@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Layout from './components/layout/Layout'
-import Home from './pages/Home'
-import AddBook from './pages/AddBook'
+import Layout from './components/Layout/Layout.jsx'
+import Home from './pages/Home.jsx'
+import AddBook from './pages/AddBook.jsx'
 
 function App() {
   return (
