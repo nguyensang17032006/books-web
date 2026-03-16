@@ -1,13 +1,20 @@
-FROM node:22
+# build react
+FROM node:22 AS build
 
 WORKDIR /app
 
-COPY package*.json ./
-
+COPY frontend/books-web/package*.json ./
 RUN npm install
 
-COPY . .
+COPY frontend/books-web .
+RUN npm run build
 
-EXPOSE 5173
+# nginx serve
+FROM nginx:latest
 
-CMD ["npm","run","dev"]
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

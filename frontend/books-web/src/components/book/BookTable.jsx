@@ -3,7 +3,6 @@ import EditBookForm from "./EditBookForm";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-const API_URL = import.meta.env.VITE_API_URL;
 
 export default function BookTable() {
     const [books, setBooks] = useState([]);
@@ -21,7 +20,7 @@ export default function BookTable() {
         if (!confirmDelete) return;
 
         try {
-            const res = await fetch(`${API_URL}/api/books/${id}`, {
+            const res = await fetch(`/api/books/${id}`, {
                 method: "DELETE",
             });
 
@@ -38,7 +37,7 @@ export default function BookTable() {
 
     const fetchBooks = async () => {
         try {
-            const res = await fetch(`${API_URL}/api/books`);
+            const res = await fetch(`/api/books`);
             const data = await res.json();
             setBooks(data);
         } catch (error) {

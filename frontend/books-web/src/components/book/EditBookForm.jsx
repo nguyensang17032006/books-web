@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-const API_URL = import.meta.env.VITE_API_URL;
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button.jsx";
@@ -85,7 +84,7 @@ export default function EditBookForm({ book, onSuccess }) {
                 formData.append("image", selectedFile);
             }
 
-            const res = await fetch(`${API_URL}/api/books/${book._id}`, {
+            const res = await fetch(`/api/books/${book._id}`, {
                 method: "PUT",
                 body: formData,
             });

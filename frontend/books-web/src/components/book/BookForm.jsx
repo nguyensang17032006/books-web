@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-const API_URL = import.meta.env.VITE_API_URL;
 
 import { Button } from "@/components/ui/button.jsx";
 import {
@@ -80,7 +79,7 @@ export default function BookForm() {
                 formData.append("image", selectedFile);
             }
 
-            const res = await fetch(`${API_URL}/api/books`, {
+            const res = await fetch(`/api/books`, {
                 method: "POST",
                 body: formData,
             });
