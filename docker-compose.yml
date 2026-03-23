@@ -11,12 +11,12 @@ services:
 
   frontend:
     build:
-      context: .d
+      context: .
       dockerfile: frontend/books-web/Dockerfile
     networks:
       - app_network
     ports:
-      - "8080:80"
+      - "80:80"
 
     depends_on:
       - backend
